@@ -1,8 +1,8 @@
 package com.example.backend.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,17 +12,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final List<String> allowedOrigins;
+
+    public SecurityConfig(
+        JwtAuthenticationFilter jwtAuthFilter,
+        AuthenticationProvider authenticationProvider,
+        @Value("${app.cors.allowed-origins:}") String allowedOriginsCsv
+    ) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.authenticationProvider = authenticationProvider;
+        this.allowedOrigins = parseAllowedOrigins(allowedOriginsCsv);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -63,11 +75,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "https://stock-portfolio-frontend.onrender.com"
-        ));
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
@@ -77,4 +85,21 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-} 
+
+    private List<String> parseAllowedOrigins(String allowedOriginsCsv) {
+        if (allowedOriginsCsv == null || allowedOriginsCsv.isBlank()) {
+            return Arrays.asList("http://localhost:3000", "http://localhost:3001");
+        }
+        String[] raw = allowedOriginsCsv.split(",");
+        List<String> result = new ArrayList<>();
+        for (String origin : raw) {
+            String trimmed = origin.trim();
+            if (!trimmed.isEmpty()) {
+                result.add(trimmed);
+            }
+        }
+        return result.isEmpty()
+            ? Arrays.asList("http://localhost:3000", "http://localhost:3001")
+            : result;
+    }
+}

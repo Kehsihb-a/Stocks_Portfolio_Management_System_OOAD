@@ -12,11 +12,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://stock-portfolio-frontend.onrender.com"
-})
 public class TransactionController {
     private final TransactionService transactionService;
 

@@ -19,11 +19,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/stocks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://stock-portfolio-frontend.onrender.com"
-})
 public class StockController {
     private final StockService stockService;
     private final FinnhubService finnhubService;

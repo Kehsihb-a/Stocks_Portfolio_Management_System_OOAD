@@ -58,6 +58,7 @@ REACT_APP_API_URL=your_backend_url
 TWELVEDATA_API_KEY=your_twelvedata_api_key
 ALPHAVANTAGE_API_KEY=your_alphavantage_api_key
 FINNHUB_API_KEY=your_finnhub_api_key
+APP_CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,https://your-vercel-app.vercel.app
 ```
 
 Note: Spring Boot maps environment variables like `TWELVEDATA_API_KEY` to
