@@ -4,7 +4,7 @@ A full-stack web application for tracking stock portfolios, built with React and
 
 ![Tech Stack](https://img.shields.io/badge/React-Frontend-blue)
 ![Tech Stack](https://img.shields.io/badge/Spring%20Boot-Backend-green)
-![Tech Stack](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Tech Stack](https://img.shields.io/badge/H2-Database-blue)
 
 ## Live Demo
 
@@ -36,7 +36,7 @@ A full-stack web application for tracking stock portfolios, built with React and
 - Spring Security
 - JWT Authentication
 - JPA/Hibernate
-- PostgreSQL
+- H2 (file-based, default)
 - Maven
 
 ## Prerequisites
@@ -44,7 +44,6 @@ A full-stack web application for tracking stock portfolios, built with React and
 - Node.js (v16 or higher)
 - Java JDK 17
 - Maven
-- PostgreSQL
 - Docker (optional)
 
 ## Environment Variables
@@ -56,14 +55,30 @@ REACT_APP_API_URL=your_backend_url
 
 ### Backend
 ```env
-SPRING_PROFILES_ACTIVE=prod
-POSTGRES_URL=your_database_url
-POSTGRES_USER=your_database_user
-POSTGRES_PASSWORD=your_database_password
 TWELVEDATA_API_KEY=your_twelvedata_api_key
 ALPHAVANTAGE_API_KEY=your_alphavantage_api_key
-FRONTEND_URL=your_frontend_url
+FINNHUB_API_KEY=your_finnhub_api_key
 ```
+
+Note: Spring Boot maps environment variables like `TWELVEDATA_API_KEY` to
+`twelvedata.api.key`. You can also set these directly in
+`backend/src/main/resources/application.properties`.
+
+## Quick Start (Docker)
+
+1. Copy environment variables
+```bash
+cp .env.example .env
+```
+
+2. Run
+```bash
+docker-compose up --build
+```
+
+3. Open
+Frontend: `http://localhost`
+Backend: `http://localhost:8080`
 
 ## Installation & Setup
 
@@ -89,10 +104,18 @@ mvn spring-boot:run
 
 ## Docker Deployment
 
-1. Build and run using Docker Compose
+1. Create a `.env` file (copy from `.env.example`)
+```bash
+cp .env.example .env
+```
+
+2. Build and run using Docker Compose
 ```bash
 docker-compose up --build
 ```
+
+The frontend will be available at `http://localhost` and the backend at
+`http://localhost:8080`.
 
 ## Deployment (Vercel + Backend Host)
 

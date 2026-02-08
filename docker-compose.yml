@@ -7,23 +7,23 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - JDBC_DATABASE_URL=${JDBC_DATABASE_URL}
-      - JDBC_DATABASE_USERNAME=${JDBC_DATABASE_USERNAME}
-      - JDBC_DATABASE_PASSWORD=${JDBC_DATABASE_PASSWORD}
       - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY}
       - TWELVEDATA_API_KEY=${TWELVEDATA_API_KEY}
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000
+      - FINNHUB_API_KEY=${FINNHUB_API_KEY}
     networks:
       - app-network
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - REACT_APP_API_URL=http://localhost:8080/api
     ports:
       - "80:80"
     depends_on:
       - backend
     environment:
-      - REACT_APP_API_URL=http://localhost:8080/api
+      - BACKEND_URL=http://backend:8080
     networks:
       - app-network
 
