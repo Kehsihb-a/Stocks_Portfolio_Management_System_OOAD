@@ -3,7 +3,7 @@ import {
     Card, CardContent, Typography, Box, Grid,
     Table, TableBody, TableCell, TableContainer, 
     TableHead, TableRow, Paper, CircularProgress,
-    Button, Snackbar, IconButton
+    Button, Snackbar, IconButton, Chip
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -12,6 +12,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 const HoldingsList = () => {
     const navigate = useNavigate();
@@ -171,6 +172,15 @@ const HoldingsList = () => {
         return isNaN(num) ? '0.00%' : `${num >= 0 ? '+' : ''}${num.toFixed(2)}%`;
     };
 
+    const allocationData = holdings.map((holding) => {
+        const currentPrice = parseFloat(stockDetails[holding.stockSymbol]?.close) || 0;
+        const quantity = parseFloat(holding.quantity) || 0;
+        const value = currentPrice * quantity;
+        return { name: holding.stockSymbol, value };
+    }).filter(item => item.value > 0);
+
+    const allocationColors = ['#1d5fd1', '#2a72ff', '#ff7a59', '#1f7a4f', '#5a2d82', '#ffb703', '#118ab2', '#ef476f'];
+
     if (loading && !holdings.length) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -197,6 +207,7 @@ const HoldingsList = () => {
                     variant="outlined"
                     startIcon={<ShareIcon />}
                     onClick={handleShare}
+                    sx={{ borderRadius: 999 }}
                 >
                     Share Portfolio
                 </Button>
@@ -205,7 +216,7 @@ const HoldingsList = () => {
             {/* Portfolio Summary Cards */}
             <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography color="textSecondary" gutterBottom>
                                 Current Value
@@ -217,7 +228,7 @@ const HoldingsList = () => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography color="textSecondary" gutterBottom>
                                 Total Investment
@@ -229,7 +240,7 @@ const HoldingsList = () => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography color="textSecondary" gutterBottom>
                                 Total P&L
@@ -247,7 +258,7 @@ const HoldingsList = () => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography color="textSecondary" gutterBottom>
                                 Today's P&L
@@ -266,8 +277,36 @@ const HoldingsList = () => {
                 </Grid>
             </Grid>
 
+            {allocationData.length > 0 && (
+                <Paper className="glass-card glow-border" sx={{ p: 3, mb: 3 }}>
+                    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                        <Typography variant="h6">Portfolio Allocation</Typography>
+                        <Chip label="By Market Value" size="small" />
+                    </Box>
+                    <Box sx={{ width: '100%', height: 280 }}>
+                        <ResponsiveContainer>
+                            <PieChart>
+                                <Pie
+                                    data={allocationData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    innerRadius={70}
+                                    outerRadius={110}
+                                    paddingAngle={2}
+                                >
+                                    {allocationData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={allocationColors[index % allocationColors.length]} />
+                                    ))}
+                                </Pie>
+                                <RechartsTooltip />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </Box>
+                </Paper>
+            )}
+
             {/* Holdings Table */}
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className="glass-card glow-border">
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -299,9 +338,12 @@ const HoldingsList = () => {
                                     sx={{ cursor: 'pointer' }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        <Typography variant="body1" fontWeight="medium">
-                                            {holding.stockSymbol}
-                                        </Typography>
+                                <Box display="flex" alignItems="center" gap={1}>
+                                    <Typography variant="body1" fontWeight="medium">
+                                        {holding.stockSymbol}
+                                    </Typography>
+                                    <Chip size="small" label={percentChange >= 0 ? 'Bull' : 'Bear'} color={percentChange >= 0 ? 'success' : 'error'} />
+                                </Box>
                                     </TableCell>
                                     <TableCell align="right">
                                         {quantity.toFixed(2)}

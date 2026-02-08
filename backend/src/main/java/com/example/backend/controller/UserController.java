@@ -11,7 +11,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "https://stock-portfolio-frontend.onrender.com"})
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://stock-portfolio-frontend.onrender.com"
+})
 public class UserController {
     private final UserService userService;
 

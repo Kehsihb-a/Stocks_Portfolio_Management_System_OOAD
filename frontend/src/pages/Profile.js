@@ -69,16 +69,24 @@ const Profile = () => {
     }, 0);
 
     return (
-        <Box>
+        <Box sx={{ minHeight: '100vh', pb: 6 }} className="page-shell">
             <Navbar />
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                <Box className="hero-panel glow-border" sx={{ mb: 3 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, letterSpacing: -0.5 }}>
+                        Your Profile
+                    </Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                        Manage balance, review transactions, and track performance.
+                    </Typography>
+                </Box>
                 {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                 {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
                 
                 <Grid container spacing={3}>
                     {/* User Info Cards */}
                     <Grid item xs={12} md={4}>
-                        <Card>
+                        <Card className="glass-card glow-border">
                             <CardContent>
                                 <Box display="flex" alignItems="center" mb={2}>
                                     <AccountBalance sx={{ mr: 1 }} />
@@ -90,7 +98,7 @@ const Profile = () => {
                                 <Button
                                     variant="contained"
                                     startIcon={<Add />}
-                                    sx={{ mt: 2 }}
+                                    sx={{ mt: 2, borderRadius: 2 }}
                                     onClick={() => setOpenTopup(true)}
                                 >
                                     Top Up
@@ -100,7 +108,7 @@ const Profile = () => {
                     </Grid>
 
                     <Grid item xs={12} md={4}>
-                        <Card>
+                        <Card className="glass-card glow-border">
                             <CardContent>
                                 <Box display="flex" alignItems="center" mb={2}>
                                     <History sx={{ mr: 1 }} />
@@ -114,7 +122,7 @@ const Profile = () => {
                     </Grid>
 
                     <Grid item xs={12} md={4}>
-                        <Card>
+                        <Card className="glass-card glow-border">
                             <CardContent>
                                 <Box display="flex" alignItems="center" mb={2}>
                                     {totalProfitLoss >= 0 ? <TrendingUp sx={{ mr: 1 }} /> : <TrendingDown sx={{ mr: 1 }} />}
@@ -132,7 +140,7 @@ const Profile = () => {
 
                     {/* User Details */}
                     <Grid item xs={12}>
-                        <Paper sx={{ p: 3, mb: 3 }}>
+                        <Paper className="glass-card glow-border" sx={{ p: 3, mb: 3 }}>
                             <Typography variant="h5" gutterBottom>Profile Details</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} md={4}>
@@ -153,7 +161,7 @@ const Profile = () => {
 
                     {/* Transaction History */}
                     <Grid item xs={12}>
-                        <Paper sx={{ p: 3 }}>
+                        <Paper className="glass-card glow-border" sx={{ p: 3 }}>
                             <Typography variant="h5" gutterBottom>Transaction History</Typography>
                             <TableContainer>
                                 <Table>

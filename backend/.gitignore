@@ -1,0 +1,7 @@
+target/
+data/
+*.db
+*.mv.db
+*.trace.db
+.env
+.env.*

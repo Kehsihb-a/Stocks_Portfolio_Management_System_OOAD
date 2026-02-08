@@ -16,7 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/holdings")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "https://stock-portfolio-frontend.onrender.com"})
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://stock-portfolio-frontend.onrender.com"
+})
 public class HoldingsController {
     private final HoldingsService holdingsService;
     private final UserService userService;

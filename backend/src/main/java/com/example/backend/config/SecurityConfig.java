@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/stocks/search").permitAll()
                 .requestMatchers("/api/stocks/*/fundamentals").permitAll()
                 .requestMatchers("/api/stocks/*/financials").permitAll()
+                .requestMatchers("/api/health").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/watchlists/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/stocks/**").permitAll()
@@ -64,6 +65,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000",
+            "http://localhost:3001",
             "https://stock-portfolio-frontend.onrender.com"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -16,6 +16,7 @@ public class CorsConfig {
         
         // Allow specific origins
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost:3001");
         config.addAllowedOrigin("https://stock-portfolio-frontend.onrender.com");
         
         // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)

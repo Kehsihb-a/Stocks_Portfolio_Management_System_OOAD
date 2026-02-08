@@ -14,7 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/watchlists")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://stock-portfolio-frontend.onrender.com"
+})
 public class WatchlistController {
     private final WatchlistService watchlistService;
     private static final Logger log = LoggerFactory.getLogger(WatchlistController.class);

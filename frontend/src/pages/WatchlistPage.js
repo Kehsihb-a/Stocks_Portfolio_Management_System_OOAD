@@ -125,19 +125,28 @@ const WatchlistPage = () => {
     };
 
     return (
-        <Box>
+        <Box sx={{ minHeight: '100vh', pb: 6 }} className="page-shell">
             <Navbar />
             <Container maxWidth="lg" sx={{ mt: 4 }}>
+                <Box className="hero-panel glow-border" sx={{ mb: 3 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, letterSpacing: -0.5 }}>
+                        Watchlists
+                    </Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                        Organize your ideas and track what matters.
+                    </Typography>
+                </Box>
                 <Grid container spacing={3}>
                     {/* Watchlists List */}
                     <Grid item xs={12}>
-                        <Paper sx={{ p: 2 }}>
+                        <Paper className="glass-card glow-border" sx={{ p: 3 }}>
                             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                                 <Typography variant="h6">My Watchlists</Typography>
                                 <Button
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={() => setOpenCreateDialog(true)}
+                                    sx={{ borderRadius: 2 }}
                                 >
                                     Create New Watchlist
                                 </Button>
@@ -149,9 +158,10 @@ const WatchlistPage = () => {
                                             sx={{ 
                                                 cursor: 'pointer',
                                                 transition: 'transform 0.2s',
+                                                borderRadius: 3,
                                                 '&:hover': { 
                                                     transform: 'translateY(-4px)',
-                                                    boxShadow: 3
+                                                    boxShadow: 'var(--card-shadow-soft)'
                                                 }
                                             }}
                                             onClick={() => handleWatchlistClick(watchlist)}

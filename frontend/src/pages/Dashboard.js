@@ -129,6 +129,12 @@ const Dashboard = () => {
         return isNaN(num) ? '0.00%' : `${num >= 0 ? '+' : ''}${num.toFixed(2)}%`;
     };
 
+    const watchlistHeatmap = selectedWatchlist?.stockSymbols?.map((symbol) => {
+        const detail = watchlistStockDetails[symbol] || {};
+        const change = parseFloat(detail.percent_change) || 0;
+        return { symbol, change };
+    }) || [];
+
     const handleCreateWatchlist = async () => {
         try {
             await createWatchlist(newWatchlistName);
@@ -212,7 +218,7 @@ const Dashboard = () => {
     };
 
     return (
-        <Box>
+        <Box sx={{ minHeight: '100vh', pb: 6 }} className="page-shell">
             <Navbar />
             
             {/* Navigation Buttons */}
@@ -317,10 +323,18 @@ const Dashboard = () => {
             </Box>
 
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                <Box className="hero-panel glow-border" sx={{ mb: 3 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, letterSpacing: -0.5 }}>
+                        Portfolio Dashboard
+                    </Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                        Search stocks, manage watchlists, and review holdings in one flow.
+                    </Typography>
+                </Box>
                 <Grid container spacing={3}>
                     {/* Search Section - Always visible */}
                     <Grid item xs={12}>
-                        <Paper sx={{ p: 3, mb: 2 }}>
+                        <Paper className="glass-card glow-border" sx={{ p: 3, mb: 2 }}>
                             <Typography variant="h6" gutterBottom>
                                 Search Stocks
                             </Typography>
@@ -397,7 +411,7 @@ const Dashboard = () => {
 
                     {/* Content Section */}
                     <Grid item xs={12}>
-                        <Paper sx={{ p: 3 }}>
+                        <Paper className="glass-card glow-border" sx={{ p: 3 }}>
                             {!selectedWatchlist ? (
                                 <>
                                     <Typography variant="h6" gutterBottom>
@@ -423,6 +437,29 @@ const Dashboard = () => {
                                             Add Stock
                                         </Button>
                                     </Box>
+                                    {watchlistHeatmap.length > 0 && (
+                                        <Box sx={{ mb: 3 }}>
+                                            <Typography variant="subtitle1" gutterBottom>
+                                                Watchlist Heatmap
+                                            </Typography>
+                                            <Box className="heatmap-grid">
+                                                {watchlistHeatmap.map((item) => {
+                                                    const intensity = Math.min(0.85, Math.abs(item.change) / 10 + 0.2);
+                                                    const bg = item.change >= 0
+                                                        ? `rgba(31,122,79,${intensity})`
+                                                        : `rgba(182,59,59,${intensity})`;
+                                                    return (
+                                                        <Box key={item.symbol} className="heatmap-tile" sx={{ background: bg }}>
+                                                            <Typography variant="body2">{item.symbol}</Typography>
+                                                            <Typography variant="caption">
+                                                                {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
+                                                            </Typography>
+                                                        </Box>
+                                                    );
+                                                })}
+                                            </Box>
+                                        </Box>
+                                    )}
                                     <List>
                                         {selectedWatchlist.stockSymbols.map((symbol) => {
                                             const stockDetail = watchlistStockDetails[symbol] || {};

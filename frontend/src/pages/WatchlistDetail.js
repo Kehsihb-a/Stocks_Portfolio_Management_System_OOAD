@@ -9,6 +9,7 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon, ArrowBack } from '@mui/icons-material';
 import Navbar from '../components/Navbar';
 import api from '../services/api';
+import Sparkline from '../components/Sparkline';
 
 const WatchlistDetail = () => {
     const { id } = useParams();
@@ -16,6 +17,7 @@ const WatchlistDetail = () => {
     const { token, user } = useAuth();
     const [watchlist, setWatchlist] = useState(null);
     const [stockDetails, setStockDetails] = useState({});
+    const [stockHistory, setStockHistory] = useState({});
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -59,6 +61,21 @@ const WatchlistDetail = () => {
                 }
             }
             setStockDetails(details);
+            const history = {};
+            await Promise.all(
+                watchlist.stockSymbols.map(async (symbol) => {
+                    try {
+                        const resp = await api.get(`/stocks/${symbol}/data?interval=1day`);
+                        const values = resp.data?.values || [];
+                        history[symbol] = values.slice(0, 12).reverse().map((v) => ({
+                            value: parseFloat(v.close)
+                        }));
+                    } catch {
+                        history[symbol] = [];
+                    }
+                })
+            );
+            setStockHistory(history);
         } catch (error) {
             console.error('Error fetching stock details:', error);
         }
@@ -151,26 +168,37 @@ const WatchlistDetail = () => {
     }
 
     return (
-        <Box>
+        <Box sx={{ minHeight: '100vh', pb: 6 }} className="page-shell">
             <Navbar />
             <Container maxWidth="lg" sx={{ mt: 4 }}>
                 {error ? (
-                    <Paper sx={{ p: 3, mb: 2 }}>
+                    <Paper sx={{ p: 3, mb: 2, borderRadius: 3, boxShadow: 'var(--card-shadow-soft)' }}>
                         <Typography color="error">{error}</Typography>
                     </Paper>
                 ) : null}
                 
                 {!watchlist ? (
-                    <Paper sx={{ p: 3 }}>
+                    <Paper className="glass-card glow-border" sx={{ p: 3 }}>
                         <Typography>Loading watchlist...</Typography>
                     </Paper>
                 ) : (
-                    <Paper sx={{ p: 3 }}>
-                        <Box display="flex" alignItems="center" mb={3}>
-                            <IconButton onClick={() => navigate('/watchlist')} sx={{ mr: 2 }}>
+                    <>
+                    <Box className="hero-panel glow-border" sx={{ mb: 3 }}>
+                        <Box display="flex" alignItems="center" gap={2}>
+                            <IconButton onClick={() => navigate('/watchlist')} sx={{ color: 'white' }}>
                                 <ArrowBack />
                             </IconButton>
-                            <Typography variant="h5">{watchlist.name}</Typography>
+                            <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                                {watchlist.name}
+                            </Typography>
+                        </Box>
+                        <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                            Track live prices and momentum across your watchlist.
+                        </Typography>
+                    </Box>
+                    <Paper className="glass-card glow-border" sx={{ p: 3 }}>
+                        <Box display="flex" alignItems="center" mb={3}>
+                            <Typography variant="h5" sx={{ fontWeight: 700 }}>Symbols</Typography>
                         </Box>
 
                         <Box display="flex" justifyContent="flex-end" mb={2}>
@@ -178,6 +206,7 @@ const WatchlistDetail = () => {
                                 variant="contained"
                                 startIcon={<AddIcon />}
                                 onClick={() => setOpenAddDialog(true)}
+                                sx={{ borderRadius: 2 }}
                             >
                                 Add Stock
                             </Button>
@@ -190,7 +219,9 @@ const WatchlistDetail = () => {
                                     button
                                     onClick={() => navigate(`/stock/${symbol}`)}
                                     sx={{
-                                        '&:hover': { bgcolor: 'action.hover' }
+                                        '&:hover': { bgcolor: 'action.hover' },
+                                        borderRadius: 2,
+                                        mb: 1
                                     }}
                                 >
                                     <ListItemText 
@@ -215,6 +246,25 @@ const WatchlistDetail = () => {
                                             ) : 'Loading...'
                                         }
                                     />
+                                    <Box sx={{ minWidth: 120, mr: 2 }}>
+                                        <Sparkline data={stockHistory[symbol] || []} stroke={stockDetails[symbol]?.percent_change >= 0 ? '#1f7a4f' : '#b63b3b'} />
+                                    </Box>
+                                    {stockDetails[symbol] && (
+                                        <Box
+                                            sx={{
+                                                px: 1.5,
+                                                py: 0.5,
+                                                borderRadius: 999,
+                                                fontSize: 12,
+                                                fontWeight: 600,
+                                                bgcolor: stockDetails[symbol].percent_change >= 0 ? 'success.light' : 'error.light',
+                                                color: stockDetails[symbol].percent_change >= 0 ? 'success.dark' : 'error.dark',
+                                                mr: 1
+                                            }}
+                                        >
+                                            {stockDetails[symbol].percent_change >= 0 ? 'Up' : 'Down'}
+                                        </Box>
+                                    )}
                                     <IconButton
                                         edge="end"
                                         onClick={(e) => {
@@ -228,6 +278,7 @@ const WatchlistDetail = () => {
                             ))}
                         </List>
                     </Paper>
+                    </>
                 )}
 
                 <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>

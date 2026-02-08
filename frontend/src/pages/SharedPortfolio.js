@@ -129,13 +129,14 @@ const SharedPortfolio = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box sx={{ minHeight: '100vh', py: 4 }} className="page-shell">
+            <Container maxWidth="lg">
             {/* Header */}
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" gutterBottom>
+            <Box className="hero-panel glow-border" sx={{ mb: 4 }}>
+                <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
                     {userInfo?.name}'s Portfolio
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
+                <Typography variant="subtitle1">
                     Shared portfolio • Valid until {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
                 </Typography>
             </Box>
@@ -143,7 +144,7 @@ const SharedPortfolio = () => {
             {/* Summary Cards */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid item xs={12} md={4}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography variant="subtitle1" color="text.secondary">
                                 Current Value
@@ -155,7 +156,7 @@ const SharedPortfolio = () => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography variant="subtitle1" color="text.secondary">
                                 Total Investment
@@ -167,7 +168,7 @@ const SharedPortfolio = () => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <Card>
+                    <Card className="glass-card glow-border">
                         <CardContent>
                             <Typography variant="subtitle1" color="text.secondary">
                                 Total P&L
@@ -187,7 +188,7 @@ const SharedPortfolio = () => {
             </Grid>
 
             {/* Holdings Table */}
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className="glass-card glow-border">
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -217,6 +218,7 @@ const SharedPortfolio = () => {
                 </Table>
             </TableContainer>
         </Container>
+        </Box>
     );
 };
 

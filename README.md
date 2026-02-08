@@ -1,4 +1,4 @@
-# Stock Portfolio Tracker
+# Stocks Portfolio Management System (OOAD)
 
 A full-stack web application for tracking stock portfolios, built with React and Spring Boot.
 
@@ -8,7 +8,7 @@ A full-stack web application for tracking stock portfolios, built with React and
 
 ## Live Demo
 
-🚀 [Try the application](https://stock-portfolio-frontend.onrender.com/login)
+🚀 Live URL: `ADD_LIVE_URL_HERE`
 
 ## Features
 
@@ -69,8 +69,8 @@ FRONTEND_URL=your_frontend_url
 
 1. Clone the repository
 ```bash
-git clone https://github.com/Chethumuniraju/stocks.git
-cd stock-portfolio-tracker
+git clone https://github.com/Kehsihb-a/Stocks_Portfolio_Management_System_OOAD.git
+cd OOAD_Project
 ```
 
 2. Frontend Setup
@@ -94,27 +94,28 @@ mvn spring-boot:run
 docker-compose up --build
 ```
 
-## Deployment on Render
+## Deployment (Vercel + Backend Host)
 
-### Backend Deployment
-1. Create a new Web Service
-2. Connect your GitHub repository
+### Backend Deployment (Render or Railway)
+1. Create a new Web Service.
+2. Connect your GitHub repository.
 3. Configure:
-   - Name: `stock-tracker-backend`
-   - Environment: `Docker`
-   - Root Directory: `.`
-   - Add environment variables
+   - Runtime: `Docker` (use `backend/Dockerfile`)
+   - Root Directory: `backend`
    - Health Check Path: `/actuator/health`
+   - Environment Variables: set all backend vars listed above.
+4. Deploy and copy the backend URL.
 
-### Frontend Deployment
-1. Create a new Web Service
-2. Connect your GitHub repository
-3. Configure:
-   - Name: `stock-tracker-frontend`
-   - Environment: `Docker`
-   - Root Directory: `.`
-   - Add environment variables
-   - Health Check Path: `/`
+### Frontend Deployment (Vercel)
+1. Import the GitHub repo in Vercel.
+2. Configure:
+   - Framework: `Create React App`
+   - Root Directory: `frontend`
+   - Build Command: `npm run build`
+   - Output Directory: `build`
+3. Add environment variables:
+   - `REACT_APP_API_URL` = your backend URL from step 4 above.
+4. Deploy and copy the Vercel URL to update `Live URL`.
 
 ## API Documentation
 

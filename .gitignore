@@ -1,1 +1,25 @@
-/data
+# OS/Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Env files
+.env
+.env.*
+
+# Logs
+*.log
+
+# Node
+node_modules/
+**/node_modules/
+coverage/
+build/
+
+# Java / Maven
+backend/target/
+**/target/
+
+# Local DB/data
+backend/data/
+**/data/

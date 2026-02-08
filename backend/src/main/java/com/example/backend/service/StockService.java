@@ -20,11 +20,13 @@ public class StockService {
     private static final String BASE_URL = "https://api.twelvedata.com";
 
     public Map<String, Object> searchStocks(String symbol) {
+        requireApiKey();
         String url = String.format("%s/symbol_search?symbol=%s&apikey=%s", BASE_URL, symbol, apiKey);
         log.info("Searching stocks with URL: {}", url);
         
         try {
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+            validateTwelveDataResponse(response);
             log.info("Search response: {}", response);
             return response;
         } catch (Exception e) {
@@ -33,14 +35,38 @@ public class StockService {
         }
     }
 
-    public Object getStockData(String symbol, String interval) {
+    public Map<String, Object> getStockData(String symbol, String interval) {
+        requireApiKey();
         String url = String.format("%s/time_series?symbol=%s&interval=%s&apikey=%s", 
             BASE_URL, symbol, interval, apiKey);
-        return restTemplate.getForObject(url, Object.class);
+        Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+        validateTwelveDataResponse(response);
+        return response;
     }
 
-    public Object getQuote(String symbol) {
+    public Map<String, Object> getQuote(String symbol) {
+        requireApiKey();
         String url = String.format("%s/quote?symbol=%s&apikey=%s", BASE_URL, symbol, apiKey);
-        return restTemplate.getForObject(url, Object.class);
+        Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+        validateTwelveDataResponse(response);
+        return response;
     }
-} 
+
+    private void requireApiKey() {
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new RuntimeException("TwelveData API key not configured");
+        }
+    }
+
+    private void validateTwelveDataResponse(Map<String, Object> response) {
+        if (response == null) {
+            throw new RuntimeException("No response from TwelveData");
+        }
+        Object status = response.get("status");
+        Object code = response.get("code");
+        Object message = response.get("message");
+        if ("error".equals(status) || code != null || message != null) {
+            throw new RuntimeException(message != null ? message.toString() : "TwelveData API error");
+        }
+    }
+}
